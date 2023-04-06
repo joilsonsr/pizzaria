@@ -20,6 +20,7 @@ class CreateProductService{
 
        }
     })
-    }
+    return product;
+   }
 }
 export{CreateProductService}

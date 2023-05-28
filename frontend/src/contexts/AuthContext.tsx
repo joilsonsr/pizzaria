@@ -1,5 +1,6 @@
-import {createContext,ReactNode, useState} from 'react'
+import {createContext,ReactNode, useState,useEffect} from 'react'
 import {api} from '../services/apiClient'
+import { toast } from 'react-toastify';
 
 import {destroyCookie, setCookie,parseCookies} from 'nookies'
 import Router from 'next/router';
@@ -44,6 +45,26 @@ export function AuthProvider({children}:AuthProviderProps){
    const [user,setUser] = useState<UserProps>();
    const isAuthenticated = !!user
 
+    useEffect(()=>{
+        //tertnar pegar algo do cookie
+        const {'@nextauth.token':token} = parseCookies();
+        if(token){
+            api.get('/me').then(response=>{
+                const {id, name, email} = response.data;
+                setUser({
+                    id,
+                    name,
+                    email
+                    }
+                )
+            })
+            .catch(()=>{
+                //se deu erro deslogamos o user.
+                signOut();
+            })
+        }
+    },[])
+
    async function signIn({email,password}:signInProps){
        try{
             const response = await  api.post('/session',{
@@ -63,10 +84,13 @@ export function AuthProvider({children}:AuthProviderProps){
             })
             //passar para proximas requsições o nosso token
             api.defaults.headers['Authorization'] = `Bearer ${token}`
+            toast.success('Logado com sucesso')
+
             //redirecionar o user para /dashboard
             Router.push('/dashboard')
 
        }catch(err){
+            toast.error("Erro ao acessar")
             console.log("Erro ao acessar", err)
        }
     }
@@ -77,9 +101,10 @@ export function AuthProvider({children}:AuthProviderProps){
                 email,
                 password
             })
-            console.log('Cadastrado com sucesso')
+            toast.success('Conta criada com sucesso')
             Router.push('/')
        }catch(err){
+            toast.error('Erro ao cadastrar!')
             console.log('Erro ao cadastrar', err)
        }
     }

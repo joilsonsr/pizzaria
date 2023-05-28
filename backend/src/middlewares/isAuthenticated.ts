@@ -14,7 +14,7 @@ export function isAuthenticated(
         return res.status(401).end()
     }
        const [, token] = authToken.split(" ")
-       console.log(token)
+       //console.log(token)
        try{
             const {sub} = verify(
                 token,

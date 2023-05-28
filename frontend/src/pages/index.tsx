@@ -11,6 +11,8 @@ import { Button } from '../components/ui/Button'
 import { AuthContext } from '../contexts/AuthContext'
 
 import Link from 'next/link'
+import { toast } from 'react-toastify'
+import { canSSRGuest } from '../utils/canSSRGuest'
 
 
 export default function Home() {
@@ -23,7 +25,8 @@ export default function Home() {
   async function handleLogin(event:FormEvent) {
     event.preventDefault();
     if (email ==='' || password ===''){
-      alert("PREENCHA os DADOS")
+      toast.warning('Preencha todos os campos')
+      
       return;
     }
     setLoading(true);
@@ -72,3 +75,9 @@ export default function Home() {
     </>
   )
 }
+
+export const getServerSideProps = canSSRGuest(async (ctx)=>{
+  return {
+    props:{}
+  }
+})

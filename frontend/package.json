@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^1.4.0",
     "jwt-decode": "^3.1.2",
-    "next": "13.3.1",
+    "next": "14.2.25",
     "nookies": "^2.5.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
